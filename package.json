@@ -1,0 +1,19 @@
+{
+  "name": "followalert",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "socket.io": "^4.1.2",
+    "twitch": "^4.6.0",
+    "twitch-auth": "^4.6.0",
+    "twitch-eventsub": "^4.6.0",
+    "twitch-eventsub-ngrok": "^4.6.0"
+  },
+  "devDependencies": {},
+  "scripts": {},
+  "keywords": [],
+  "author": "Atlas7005",
+  "license": "agpl-3.0"
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Follow Alert</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                background: transparent;
+                width: 100%;
+                height: 100%;
+                font-size: large;
+            }
+
+            .alert {
+                position: absolute;
+                left: 25px;
+                top: 25px;
+                width: auto;
+                height: 125px;
+                background: #121218;
+                color: white;
+                border-radius: 8px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                white-space: nowrap;
+                box-shadow: 0px 0px 10px 0px rgba(70, 27, 194, .6);
+                border: 1px solid #461BC2;
+            }
+
+            .header {
+                display: flex;
+                height: 1.8em;
+                width: 100%;
+                align-items: center;
+                padding: 0 .65em;
+                background-color: #242430;
+                border-radius: 8px 8px 0 0;
+                white-space: nowrap;
+            }
+
+            .username {
+                display: flex;
+                width: 100%;
+                height: 100%;
+                font-size: 1.5rem;
+                padding: 0 3.5em;
+                justify-content: center;
+                align-items: center;
+                white-space: nowrap;
+            }
+
+            .slide-right {
+                animation: .5s slide-right;
+            }
+
+            .slide-left {
+                animation: .5s slide-left;
+            }
+
+            @keyframes slide-right {
+                from {
+                    margin-left: -100%;
+                }
+                to {
+                    margin-left: 0%;
+                }
+            }
+
+            @keyframes slide-left {
+                from {
+                    margin-left: 0%;
+                }
+                to {
+                    margin-left: -100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="wrapper"></div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js" integrity="sha512-2ho+gY0H62N4Z9oxD422L2ZYXiOMq9l+Aub1QNz4Z4UDOtDVxz4vk6O6R3Hqqc9Y7qSvZFl7cy3+eZ/ITnUrLA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script>
+            const socket = io("http://localhost:6508");
+
+            var info = {
+                playing: false,
+                latest: null,
+                queue: [],
+                template: `<div class="alert slide-right"><div class="header">Follow</div><div class="username">%NAME%</div></div>`
+            };
+
+            socket.on("follow", follower => {
+                if(info.queue.includes(follower)) return;
+                info.queue.push(follower);
+                if(info.playing) return;
+                playAlert(follower);
+            });
+
+            function playAlert(follower) {
+                if(info.playing) return;
+                info.playing = true;
+                new Audio("sound.mp3").play();
+                $(".wrapper").append(info.template.replace("%NAME%", follower));
+                console.log(follower, info.queue);
+                setTimeout(() => {
+                    $(".alert").removeClass("slide-right");
+                    $(".alert").addClass("slide-left");
+                    setTimeout(() => {                        
+                        $(".wrapper").empty();
+                        info.playing = false;
+                        removeFromArr(info.queue, follower);
+                        if(info.queue.length < 1) return;
+                        setTimeout(() => {
+                            playAlert(info.queue[0]);
+                        }, 2500);
+                    }, 485);
+                }, 10000);
+            }
+
+            function removeFromArr(arr) {
+                var what, a = arguments, L = a.length, ax;
+                while (L > 1 && arr.length) {
+                    what = a[--L];
+                    while ((ax= arr.indexOf(what)) !== -1) {
+                        arr.splice(ax, 1);
+                    }
+                }
+                return arr;
+            };
+        </script>
+    </body>
+</html>
