@@ -5,7 +5,7 @@ You need to have [Ngrok](https://ngrok.com) installed to use this!
 ## Usage
 1. Clone the repo.
 2. Install dependencies `$ npm install`.
-4. Edit `.env.example` to fit your credentials.
+4. Edit `example.env` to fit your credentials.
 5. Then rename it to `.env`
 6. If you want a different sound, replace the `sound.mp3` file.
 7. Start using Node.js `$ node app.js`.
